@@ -1,4 +1,3 @@
-// I accidnetly implmeneted the snakehead using the wrong class... ill fix it later
 import java.awt.Graphics;
 import javax.swing.ImageIcon;
 
@@ -19,8 +18,6 @@ public class SnakeHead extends SnakePiece {
             default -> {}
         }
     }
-
-
 
     @Override
     public void draw(Graphics g) {
