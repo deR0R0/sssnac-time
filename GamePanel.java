@@ -51,10 +51,22 @@ public class GamePanel extends JPanel {
       public void keyPressed(KeyEvent e) {
          // check for key presses and change the direction of the player
          switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> player.setDirection("UP");
-            case KeyEvent.VK_DOWN -> player.setDirection("DOWN");
-            case KeyEvent.VK_LEFT -> player.setDirection("LEFT");
-            case KeyEvent.VK_RIGHT -> player.setDirection("RIGHT");
+            case KeyEvent.VK_UP:
+               if(!player.getDirection().equals("DOWN"))
+                  player.setDirection("UP");
+               break;
+            case KeyEvent.VK_DOWN:
+               if(!player.getDirection().equals("UP"))
+                  player.setDirection("DOWN");
+               break;
+            case KeyEvent.VK_LEFT:
+               if(!player.getDirection().equals("RIGHT"))
+                  player.setDirection("LEFT");
+               break;
+            case KeyEvent.VK_RIGHT:
+               if(!player.getDirection().equals("LEFT"))
+                  player.setDirection("RIGHT");
+               break;
          }
       }
    }
