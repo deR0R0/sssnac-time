@@ -18,18 +18,10 @@ public class HomePanel extends JPanel implements ActionListener {
    public HomePanel(JFrame frame) {
       mainFrame = frame;
       
-      // Create background grid using driver dimensions (900x900)
+      //(900x900)
       bg = new BackgroundGrid(10, 10, new Color(143, 205, 57), new Color(168, 217, 72), 900, 900);
       
-      // Use simple layout manager
-      
-      // Add empty panel at top for spacing
-      add(new JPanel() {
-         public void paintComponent(Graphics g) {
-            // Make this panel transparent
-            
-         }
-      });
+    
       
       // Add title
       JLabel title = new JLabel("SSSnake Time");
