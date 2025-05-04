@@ -1,3 +1,9 @@
+// HomePanel.java
+// Code Written by Robert Zhao and Nihal Gorthi
+// Date 5/2/2025
+// Made for Computer Science Foundations Project @ TJHSST
+// © 2025 Robert Zhao and Nihal Gorthi
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,84 +18,57 @@ public class HomePanel extends JPanel implements ActionListener {
    public HomePanel(JFrame frame) {
       mainFrame = frame;
       
-      // TODO: maybe add more grid patterns? Current one is kinda boring
-      bg = new BackgroundGrid();
+      // Create background grid using driver dimensions (900x900)
+      bg = new BackgroundGrid(10, 10, new Color(143, 205, 57), new Color(168, 217, 72), 900, 900);
       
-      setLayout(null);   // absolute positioning - took forever to figure this out!
-      setOpaque(false);  // makes panel transparent - took forever to figure this out!
+      // Use simple layout manager
       
+      // Add empty panel at top for spacing
+      add(new JPanel() {
+         public void paintComponent(Graphics g) {
+            // Make this panel transparent
+            
+         }
+      });
+      
+      // Add title
       JLabel title = new JLabel("SSSnake Time");
-      title.setBounds(300, 100, 300, 70);
       title.setFont(new Font("Arial", Font.BOLD, 40));
-      title.setForeground(new Color(50, 20, 10));      // brownish color
-      title.setHorizontalAlignment(JLabel.CENTER);
+      title.setForeground(new Color(50, this.getWidth(), 10));
       add(title);
       
-      // init all buttons - should probably make these constants but whatever
-      standardBtn = makeButton("Standard Mode", 300);
-      speedBtn = makeButton("Speed Mode 🔥", 400);
-      quakeBtn = makeButton("E A R T H Q U A K E", 500);  // space between letters looks cool
+      // Add buttons
+      standardBtn = new JButton("Standard Mode");
+      standardBtn.addActionListener(this);
+      add(standardBtn);
+      
+      speedBtn = new JButton("Speed Mode");
+      speedBtn.addActionListener(this);
+      add(speedBtn);
+      
+      quakeBtn = new JButton("Earthquake Mode");
+      quakeBtn.addActionListener(this);
+      add(quakeBtn);
    }
    
-   // quick button maker - saves typing the same stuff over and over
-   private JButton makeButton(String txt, int yPos) {
-      JButton btn = new JButton(txt);
-      
-      // standard button setup
-      btn.setBounds(300, yPos, 300, 60);
-      btn.setFont(new Font("Arial", Font.BOLD, 20));
-      
-      // colors - might need adjusting
-      Color btnGreen = new Color(100, 180, 40);  // my favorite shade of green
-      btn.setBackground(btnGreen);
-      btn.setForeground(Color.WHITE);
-      
-      // make it pretty
-      btn.setFocusPainted(false);  // removes ugly focus border
-      btn.setBorder(BorderFactory.createRaisedBevelBorder());
-      
-      // wire up the listener
-      btn.addActionListener(this);
-      add(btn);
-      return btn;
-   }
-   
-   @Override
-   protected void paintComponent(Graphics g) {
+   public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      
-      // draw background first
       bg.draw(g);
-      
-      /* adding semi-transparent overlay for better readability
-         tried different alpha values:
-         - 40 too light
-         - 80 too dark
-         - 60 looks just right
-      */
-      g.setColor(new Color(0, 0, 0, 60));
-      g.fillRoundRect(250, 50, 400, 600, 30, 30);
    }
    
-   // TODO fix this please i just made something up
    public void actionPerformed(ActionEvent e) {
-      // default to standard mode
-      String mode = "standard";
+     // GamePanel game = new GamePanel();
       
-      // figure out which button was clicked
-      if (e.getSource() == speedBtn) {
-         mode = "speed";
-      } else if (e.getSource() == quakeBtn) {
-         mode = "earthquake";
-      }
+      //if (e.getSource() == speedBtn) {
+     //   game.setGameMode("speed");
+     // } else if (e.getSource() == quakeBtn) {
+        // game.setGameMode("earthquake");
+     // } else {
+       //  game.setGameMode("standard");
+      //}
       
-      // start new game
-      GamePanel game = new GamePanel();
-      //game.setGameMode(mode);  // commented out till I implement this
-      
-      // switch panels
-      mainFrame.setContentPane(game);
-      mainFrame.revalidate();
-      game.requestFocus();  // make sure keyboard input works
+    //  mainFrame.setContentPane(game);
+     // mainFrame.revalidate();
+     // game.requestFocus();
    }
 }
