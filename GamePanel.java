@@ -29,12 +29,12 @@ public class GamePanel extends JPanel {
    private Graphics myBuffer;
    private Timer t;
 
+   // stuff initiazliated after the game starts
    private SnakeHead player;
+   private Apple apple;
 
+   // time based fields
    private int tick = 0;
-   private boolean lockInput = false;
-
-   private long secs = System.currentTimeMillis()/1000;
 
    // constructors, or basically the setup for the game
    public GamePanel() {
@@ -47,6 +47,10 @@ public class GamePanel extends JPanel {
 
       // create the player
       player = new SnakeHead(0, 0, FRAME/GRID, 1, "RIGHT", null, null);
+
+      // create apple yummy
+      apple = new Apple(0, 0, FRAME/GRID, GRID);
+      apple.jump();
 
       // start the game loop without blocking the gui threads
       t = new Timer(loopDelay, new GameLoop()); // 840 / the integer = fps. 840 = 
@@ -78,38 +82,19 @@ public class GamePanel extends JPanel {
 
       @Override
       public void keyPressed(KeyEvent e) {
-         if(lockInput) {
-            return;
-         }
-         // check for key presses and change the direction of the player
+         // TODO: reimplememt moving :O
          switch (e.getKeyCode()) {
             case KeyEvent.VK_UP -> {
-               if(!player.getDirection().equals("DOWN")) {
-                  snapToGridX("up");
-                  player.setDirection("UP");
-                  lockInput = true;
-               }
+               
             }
             case KeyEvent.VK_DOWN -> {
-               if(!player.getDirection().equals("UP")) {
-                  snapToGridX("down");
-                  player.setDirection("DOWN");
-                  lockInput = true;
-               }
+               
             }
             case KeyEvent.VK_LEFT -> {
-               if(!player.getDirection().equals("RIGHT")) {
-                  snapToGridY();
-                  player.setDirection("LEFT");
-                  lockInput = true;
-               }
+               
             }
             case KeyEvent.VK_RIGHT -> {
-               if(!player.getDirection().equals("LEFT")) {
-                  snapToGridY();
-                  player.setDirection("RIGHT");
-                  lockInput = true;
-               }
+               
             }
          }
       }
@@ -127,6 +112,8 @@ public class GamePanel extends JPanel {
          // Erase previous frame by overlaying the background
          BACKGROUND.draw(myBuffer);
 
+         apple.draw(myBuffer);
+
          // move the player and draw it
          player.move();
          player.draw(myBuffer);
@@ -134,13 +121,8 @@ public class GamePanel extends JPanel {
          // Paint
          repaint();
 
-
          // ticking system to handle the speed of the game
          tick++;
-
-         if(tick % 30 == 0) {
-            lockInput = false;
-         }
       }
    }
 }
