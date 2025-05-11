@@ -1,4 +1,6 @@
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 public class SnakeHead extends SnakePiece {
@@ -19,9 +21,30 @@ public class SnakeHead extends SnakePiece {
         }
     }
 
+    public BufferedImage getRotatedImage(int angle, ImageIcon imageIcon) {
+        // rotate the image by the given angle
+        BufferedImage image = new BufferedImage(getSize(), getSize(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+        g2d.rotate(Math.toRadians(angle), getSize() / 2, getSize() / 2);
+        g2d.drawImage(imageIcon.getImage(), 0, 0, getSize(), getSize(), null);
+        g2d.dispose();
+        return image;
+    }
+
     @Override
     public void draw(Graphics g) {
-        ImageIcon image = new ImageIcon("snake_head_" + getDirection().toLowerCase() + ".png");
-        g.drawImage(image.getImage(), getX(), getY(), getSize(), getSize(), null);
+        // get the default image for snake head :O
+        ImageIcon imageIcon = new ImageIcon("snake_head_right.png");
+
+        // draw the image
+        g.drawImage(getRotatedImage(0, imageIcon), getX(), getY(), getSize(), getSize(), null);
+    }
+
+    public void draw(Graphics g, int angle) {
+        // get the default image for snake head :O
+        ImageIcon imageIcon = new ImageIcon("snake_head_right.png");
+
+        // draw the image
+        g.drawImage(getRotatedImage(angle, imageIcon), getX(), getY(), getSize(), getSize(), null);
     }
 }

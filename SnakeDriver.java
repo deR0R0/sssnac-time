@@ -10,7 +10,7 @@ public class SnakeDriver {
       frame.setSize(900, 900);
       frame.setLocation(0, 0);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      HomePanel p = new HomePanel();
+      GamePanel p = new GamePanel();
       frame.setContentPane(p);
       p.requestFocus();
       frame.setVisible(true);
