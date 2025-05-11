@@ -36,6 +36,8 @@ public class GamePanel extends JPanel {
    // stuff initiazliated after the game starts
    private SnakeHead player;
    private int playerRotation = 0;
+   private int playerRotateTo = 0;
+   private int playerRotationSpeed = 1; // dynamic, based on early and late turns
    private Apple apple;
 
    // time based fields
@@ -90,9 +92,11 @@ public class GamePanel extends JPanel {
       // if player is in the left half of the grid, snap to the grid
       if(player.getX() % (FRAME / GRID) <= (FRAME / GRID / 2)) {
          player.setX(player.getX() - (player.getX() % (FRAME / GRID)));
+         playerRotationSpeed = 5;
       } else { // if player is in the right half of the grid, snap to next grid
          player.setX(player.getX() + (FRAME / GRID) - (player.getX() % (FRAME / GRID)));
          player.setSpeed(2);
+         playerRotationSpeed = 3;
       }
 
       tickTillResetSpeed = tick + ((FRAME / GRID) / 5);
@@ -102,9 +106,11 @@ public class GamePanel extends JPanel {
       // same as snapToGridX();
       if(player.getY() % (FRAME / GRID) <= (FRAME / GRID / 2)) {
          player.setY(player.getY() - (player.getY() % (FRAME / GRID)));
+         playerRotationSpeed = 5;
       } else {
          player.setY(player.getY() + (FRAME / GRID) - (player.getY() % (FRAME / GRID)));
          player.setSpeed(2);
+         playerRotationSpeed = 3;
       }
 
       tickTillResetSpeed = tick + ((FRAME / GRID) / 5);
@@ -163,6 +169,30 @@ public class GamePanel extends JPanel {
       }
    }
 
+   public void handleRotation() {
+      // get the angles of the player to rotate to
+      switch(player.getDirection()) {
+         case "UP" -> playerRotateTo = 270;
+         case "DOWN" -> playerRotateTo = 90;
+         case "LEFT" -> playerRotateTo = 180;
+         case "RIGHT" -> playerRotateTo = 0;
+      }
+
+      if(playerRotation != playerRotateTo) {
+         // check whether or not the player is within the range,
+         // if player is, just set to the angle
+         if(Math.abs(playerRotation - playerRotateTo) <= 5) {
+            playerRotation = playerRotateTo;
+         }
+         // actual rotation if not in range
+         if(playerRotation < playerRotateTo) {
+            playerRotation += playerRotationSpeed;
+         } else if(playerRotation > playerRotateTo) {
+            playerRotation -= playerRotationSpeed;
+         }
+      }
+   }
+
    public void handlePlayerActions() {
       // unlock input after set amount of time
       if(tick >= tickTillResetSpeed + ((FRAME / GRID) / 2)) {
@@ -177,6 +207,7 @@ public class GamePanel extends JPanel {
 
       // move the player and draw it
       handlePlayerTurning();
+      handleRotation();
       player.move();
       player.draw(myBuffer, playerRotation);
    }
