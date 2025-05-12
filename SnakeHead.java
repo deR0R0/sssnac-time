@@ -19,6 +19,11 @@ public class SnakeHead extends SnakePiece {
             case "RIGHT" -> setX(getX() + getSpeed());
             default -> {}
         }
+
+        getPastPos().addFirst(new int[]{getX(), getY()});
+        if (getPastPos().size() > 100) {
+            getPastPos().removeLast();
+        }
     }
 
     public BufferedImage getRotatedImage(int angle, ImageIcon imageIcon) {

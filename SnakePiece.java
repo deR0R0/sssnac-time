@@ -1,8 +1,12 @@
+
+import java.util.LinkedList;
+
 public abstract class SnakePiece extends Piece {
     private int speed;
     private String direction;
     private SnakePiece leader;
     private SnakePiece follower;
+    private LinkedList<int[]> pastPos = new LinkedList<>();
 
     // constructor
     public SnakePiece(int x, int y, int size, int speed, String direction, SnakePiece leader, SnakePiece follower) {
@@ -30,6 +34,10 @@ public abstract class SnakePiece extends Piece {
         return follower;
     }
 
+    public LinkedList<int[]> getPastPos() {
+        return pastPos;
+    }
+
     // setter methods
     public void setSpeed(int speed) {
         this.speed = speed;
@@ -45,6 +53,10 @@ public abstract class SnakePiece extends Piece {
 
     public void setFollower(SnakePiece follower) {
         this.follower = follower;
+    }
+
+    public void setPastPos(LinkedList<int[]> pastPos) {
+        this.pastPos = pastPos;
     }
 
     // methods for moving

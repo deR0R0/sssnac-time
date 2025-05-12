@@ -20,6 +20,6 @@ public class Apple extends Piece {
     // drawing
     public void draw(Graphics g) {
         ImageIcon image = new ImageIcon("apple.png");
-        g.drawImage(image.getImage(), getX(), getY(), getSize()/2, getSize()/2, null);
+        g.drawImage(image.getImage(), getX(), getY(), getSize(), getSize(), null);
     }
 }

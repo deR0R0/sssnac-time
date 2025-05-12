@@ -22,6 +22,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.util.LinkedList;
 import javax.swing.*;
 
 public class GamePanel extends JPanel {
@@ -38,7 +39,10 @@ public class GamePanel extends JPanel {
    private int playerRotation = 0;
    private int playerRotateTo = 0;
    private int playerRotationSpeed = 1; // dynamic, based on early and late turns
+
    private Apple apple;
+
+   private LinkedList<SnakePiece> snakeBody = new LinkedList<>();
 
    // time based fields
    private int tick = 0;
@@ -59,8 +63,8 @@ public class GamePanel extends JPanel {
       player = new SnakeHead(0, 0, FRAME/GRID, 1, "RIGHT", null, null);
 
       // create apple yummy
-      apple = new Apple(0, 0, FRAME/GRID, GRID);
-      apple.jump();
+      apple = new Apple(FRAME/GRID*2, 0, FRAME/GRID, GRID);
+      //apple.jump();
 
       // start the game loop without blocking the gui threads
       t = new Timer(loopDelay, new GameLoop()); // 840 / the integer = fps. 840 = 
@@ -212,9 +216,63 @@ public class GamePanel extends JPanel {
       player.draw(myBuffer, playerRotation);
    }
 
+   public int getDistance(Piece a, Piece b) {
+      // get the distance between two pieces
+      return (int) Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
+   }
+
+   public void addSnakePiece() {
+      // determine which end to add the snake piece to)
+      if(!snakeBody.isEmpty()) {
+         SnakePiece last = snakeBody.getLast();
+         // offset the snake piece
+         int newSnakeX = last.getX();
+         int newSnakeY = last.getY();
+         
+         switch(player.getDirection()) {
+            case "UP" -> newSnakeY += FRAME/GRID;
+            case "DOWN" -> newSnakeY -= FRAME/GRID;
+            case "LEFT" -> newSnakeX += FRAME/GRID;
+            case "RIGHT" -> newSnakeX -= FRAME/GRID;
+         }
+
+         SnakeBody newBody = new SnakeBody(newSnakeX, newSnakeY, FRAME/GRID, 1, player.getDirection(), last, null, GRID);
+         
+         // set the follower to the last piece
+         snakeBody.getLast().setFollower(newBody);
+         snakeBody.add(newBody);
+      } else {
+         // offset the snake piece
+         int newSnakeX = player.getX();
+         int newSnakeY = player.getY();
+         
+         switch(player.getDirection()) {
+            case "UP" -> newSnakeY -= FRAME/GRID;
+            case "DOWN" -> newSnakeY += FRAME/GRID;
+            case "LEFT" -> newSnakeX -= FRAME/GRID;
+            case "RIGHT" -> newSnakeX += FRAME/GRID;
+         }
+
+         SnakeBody newBody = new SnakeBody(newSnakeX, newSnakeY, FRAME/GRID, 1, player.getDirection(), player, null, GRID);
+         
+         player.setFollower(player);
+         snakeBody.add(newBody);
+      }
+   }
+
+   public void detectAppleCollision() {
+      // check if the player has eaten the apple
+      if(getDistance(player, apple) <= (FRAME / GRID) - 5) {
+         apple.jump();
+         addSnakePiece();
+      }
+   }
+
    // game loop
    private class GameLoop implements ActionListener {
       public void actionPerformed(ActionEvent e) {
+         tick++;
+
          // erase previous frame by overlaying the background
          BACKGROUND.draw(myBuffer);
 
@@ -224,11 +282,20 @@ public class GamePanel extends JPanel {
          // player actions
          handlePlayerActions();
 
-         // Paint
+         // draw the snake body
+         for(SnakePiece piece : snakeBody) {
+            piece.move();
+            piece.draw(myBuffer);
+         }
+
+         // detect apple collision
+         detectAppleCollision();
+
+
          repaint();
 
          // ticking system to handle the speed of the game
-         tick++;
+         
       }
    }
 }
