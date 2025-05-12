@@ -8,8 +8,8 @@
    ✔️ Implement "snapping" to the grid (through the turning)
    ✔️ Fix the latency of the snake turning, potential solution: queue the inputs in an array, then process them when the input unlocks
    ✔️ Implement the apple spawning. OPTIONAL: make the apple float up and down
-   - Implement apple spawning in random locations when eaten
-   - Implement the snake growing when it eats the apple through the body use of leadership and follwership ideology
+   ✔️ Implement apple spawning in random locations when eaten
+   ✔️ Implement the snake growing when it eats the apple through the body use of leadership and follwership ideology
    - Implement the snake dying when it runs into itself or the wall (the wall is the edge of the screen)
 
    - Implement other modes (eat apple, go faster)
@@ -28,8 +28,10 @@ import javax.swing.*;
 public class GamePanel extends JPanel {
    private static final int FRAME = 900;
    private static final int GRID = 15; // gridsize x gridsize
-   private static final int loopDelay = 5; // delay in milliseconds
+   private static final int loopDelay = 5; // delay in milliseconds   
    private final BackgroundGrid BACKGROUND;
+   private final Scoreboard SCOREBOARD;
+   private int scoreBoardTransparency = 200;
    private BufferedImage myImage;
    private Graphics myBuffer;
    private Timer t;
@@ -44,6 +46,8 @@ public class GamePanel extends JPanel {
 
    private LinkedList<SnakePiece> snakeBody = new LinkedList<>();
 
+   private int score = 0;
+
    // time based fields
    private int tick = 0;
    private KeyEvent queuedInput = null;
@@ -54,10 +58,9 @@ public class GamePanel extends JPanel {
    public GamePanel() {
       // create the buffered image for a smoother game
       myImage =  new BufferedImage(FRAME, FRAME, BufferedImage.TYPE_INT_RGB);
-      myBuffer = myImage.getGraphics();
-
-      // create the background grid
+      myBuffer = myImage.getGraphics();      // create the background grid and scoreboard
       BACKGROUND = new BackgroundGrid(GRID, GRID, new Color(143, 205, 57), new Color(168, 217, 72), FRAME, FRAME);
+      SCOREBOARD = new Scoreboard(5, 5, 12345, GRID); // Moved away from the edge for better visibility
 
       // create the player
       player = new SnakeHead(0, 0, FRAME/GRID, 1, "RIGHT", null, null);
@@ -264,8 +267,37 @@ public class GamePanel extends JPanel {
       // check if the player has eaten the apple
       if(getDistance(player, apple) <= (FRAME / GRID) - 5) {
          apple.jump();
+         SCOREBOARD.increaseScore();
          addSnakePiece();
       }
+   }
+
+   public void checkWallCollision() {
+      // check if the player has hit the wall
+      if(player.getX() < 0 || player.getX() > FRAME - (FRAME / GRID) || player.getY() < 0 || player.getY() > FRAME - (FRAME / GRID)) {
+         // end game
+         System.out.println("Game Over");
+         System.exit(0);
+      }
+   }
+
+   public void checkSnakeCollision() {
+      // check if the player has hit the snake
+      for(SnakePiece piece : snakeBody) {
+         if(getDistance(player, piece) <= (FRAME / GRID) - (piece.getSize() / 1.5)) {
+            // end game
+            System.out.println("Game Over from Snake Body");
+            System.exit(0);
+         }
+      }
+   }
+
+   public void checkEndGame() {
+      // check if the player has hit the wall
+      checkWallCollision();
+
+      // check if the player has hit the snake
+      checkSnakeCollision();
    }
 
    // game loop
@@ -282,15 +314,31 @@ public class GamePanel extends JPanel {
          // player actions
          handlePlayerActions();
 
+         // check if the player has hit the wall or snake
+         checkEndGame();
+
          // draw the snake body
          for(SnakePiece piece : snakeBody) {
             piece.move();
             piece.draw(myBuffer);
-         }
-
-         // detect apple collision
+         }         // detect apple collision
          detectAppleCollision();
 
+         if(getDistance(player, SCOREBOARD) <= (FRAME / GRID)*2) {
+            if(scoreBoardTransparency > 50) {
+               scoreBoardTransparency -= 5;
+            } else {
+               scoreBoardTransparency = 50;
+            }
+         } else {
+            if(scoreBoardTransparency < 255) {
+               scoreBoardTransparency += 5;
+            } else {
+               scoreBoardTransparency = 255;
+            }
+         }
+
+         SCOREBOARD.draw(myBuffer, scoreBoardTransparency);
 
          repaint();
 
