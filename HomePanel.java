@@ -6,6 +6,7 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import javax.swing.*;
 
 public class HomePanel extends JPanel {
@@ -13,15 +14,22 @@ public class HomePanel extends JPanel {
    private JButton standardBtn;  
    private JButton speedBtn;
    private JButton quakeBtn;
+   private JButton leaderboardBtn;
    private ImageIcon imageIcon = new ImageIcon(new ImageIcon("snakehomepanel2.png").getImage().getScaledInstance(140, 140, Image.SCALE_DEFAULT));
    private BackgroundGrid bg; 
+   private Font whaleITried;
    
-   public HomePanel() {
+   public HomePanel() throws Exception {
+      // get the font from the true type file
+      whaleITried = Font.createFont(Font.TRUETYPE_FONT, new File("whale-i-tried.ttf")).deriveFont(100f);
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      ge.registerFont(whaleITried);
+
       setLayout(new BorderLayout());
       bg = new BackgroundGrid(10, 10, new Color(143, 205, 57), new Color(168, 217, 72), 900, 900);
 
       JLabel title = new JLabel(" SSSnack Time!", SwingConstants.CENTER);
-      title.setFont(new Font("Wawati SC", Font.BOLD, 100));
+      title.setFont(whaleITried);
       title.setForeground(Color.WHITE);
 
       JLabel names = new JLabel("© 2025 Robert Zhao and Nihal Gorthi", SwingConstants.CENTER);
@@ -52,7 +60,7 @@ public class HomePanel extends JPanel {
       
       buttonPanel.add(standardBtn);
 
-      speedBtn = new JButton("Speed Mode 🔥");
+      speedBtn = new JButton("⏩ Speed Mode");
       speedBtn.setFont(new Font("Wawati SC", Font.BOLD, 20));
       speedBtn.addActionListener(new SpeedListener());
       buttonPanel.add(speedBtn);
@@ -61,6 +69,11 @@ public class HomePanel extends JPanel {
       quakeBtn.setFont(new Font("Wawati SC", Font.BOLD, 22));
       quakeBtn.addActionListener(new QuakeListener());
       buttonPanel.add(quakeBtn);
+
+      leaderboardBtn = new JButton("🏆 Leaderboard");
+      leaderboardBtn.setFont(new Font("Wawati SC", Font.BOLD, 20));
+      leaderboardBtn.addActionListener(new LeaderboardListener());
+      buttonPanel.add(leaderboardBtn);
 
       JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 100));
       mainPanel.add(buttonPanel);
@@ -113,6 +126,19 @@ public class HomePanel extends JPanel {
          frame.setVisible(true);
          game.requestFocus(); //learned this roberto r u proud of me?
 
+      }
+   }
+
+   public class LeaderboardListener implements ActionListener {
+      public void actionPerformed(ActionEvent e) {
+         LeaderboardPanel leaderboard = new LeaderboardPanel();
+         frame = new JFrame("SSSnack Time - Leaderboard");
+         frame.setSize(900, 900);
+         frame.setLocation(0, 0);
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setContentPane(leaderboard);
+         frame.setVisible(true);
+         leaderboard.requestFocus();
       }
    }
 }

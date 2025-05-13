@@ -5,7 +5,7 @@
 
 import javax.swing.JFrame;
 public class SnakeDriver {
-   public static void main(String[] args) { 
+   public static void main(String[] args) throws Exception { 
       JFrame frame = new JFrame("SSSnack Time");
       frame.setSize(900, 900);
       frame.setLocation(0, 0);

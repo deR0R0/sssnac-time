@@ -22,19 +22,23 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.io.File;
 import java.util.LinkedList;
 import javax.swing.*;
 
 public class GamePanel extends JPanel {
+   private JFrame frame = new JFrame("Game Frame - Standard");
+
    private static final int FRAME = 900;
    private static final int GRID = 15; // gridsize x gridsize
-   private static final int loopDelay = 5; // delay in milliseconds   
+   private static final int loopDelay = 5; // delay in milliseconds
    private final BackgroundGrid BACKGROUND;
    private final Scoreboard SCOREBOARD;
    private int scoreBoardTransparency = 200;
    private BufferedImage myImage;
    private Graphics myBuffer;
    private Timer t;
+   private boolean gameOver = false;
 
    // stuff initiazliated after the game starts
    private SnakeHead player;
@@ -50,12 +54,22 @@ public class GamePanel extends JPanel {
 
    // time based fields
    private int tick = 0;
+   private int tickUntilBackHome = 0;
    private KeyEvent queuedInput = null;
    private int tickTillResetSpeed = 0;
    private boolean lockInput = false;
 
+   private Font whaleITried;
+
    // constructors, or basically the setup for the game
    public GamePanel() {
+      try {
+         whaleITried = Font.createFont(Font.TRUETYPE_FONT, new File("whale-i-tried.ttf")).deriveFont(100f);
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      ge.registerFont(whaleITried);
       // create the buffered image for a smoother game
       myImage =  new BufferedImage(FRAME, FRAME, BufferedImage.TYPE_INT_RGB);
       myBuffer = myImage.getGraphics();      // create the background grid and scoreboard
@@ -213,10 +227,12 @@ public class GamePanel extends JPanel {
       }
 
       // move the player and draw it
-      handlePlayerTurning();
-      handleRotation();
-      player.move();
-      player.draw(myBuffer, playerRotation);
+      if(!gameOver) {
+         handlePlayerTurning();
+         handleRotation();
+         player.move();
+      }
+      player.draw(myBuffer, playerRotation, gameOver);
    }
 
    public int getDistance(Piece a, Piece b) {
@@ -276,8 +292,8 @@ public class GamePanel extends JPanel {
       // check if the player has hit the wall
       if(player.getX() < 0 || player.getX() > FRAME - (FRAME / GRID) || player.getY() < 0 || player.getY() > FRAME - (FRAME / GRID)) {
          // end game
-         System.out.println("Game Over");
-         System.exit(0);
+         gameOver = true;
+         tickUntilBackHome = tick + 1500;
       }
    }
 
@@ -286,8 +302,8 @@ public class GamePanel extends JPanel {
       for(SnakePiece piece : snakeBody) {
          if(getDistance(player, piece) <= (FRAME / GRID) - (piece.getSize() / 1.5)) {
             // end game
-            System.out.println("Game Over from Snake Body");
-            System.exit(0);
+            gameOver = true;
+            tickUntilBackHome = tick + 1500;
          }
       }
    }
@@ -313,6 +329,41 @@ public class GamePanel extends JPanel {
 
          // player actions
          handlePlayerActions();
+
+         if(gameOver) {
+            // if has reached the end, set home panel
+            if(tick >= tickUntilBackHome) {
+               try {
+                  String a = JOptionPane.showInputDialog("Do you want to save your score? (Y/N)");
+                  if(a.equalsIgnoreCase("y")) {
+                     String name = JOptionPane.showInputDialog("Enter your name:");
+                     LeaderboardHandler.addScore(name, SCOREBOARD.getScore());
+                  }
+
+
+                  HomePanel home = new HomePanel();
+                  frame = new JFrame("Home");
+                  frame.setSize(900, 900);
+                  frame.setLocation(0, 0);
+                  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                  frame.setContentPane(home);
+                  frame.setVisible(true);
+                  home.requestFocus();
+                  t.stop();
+               } catch (Exception err) {
+                  err.printStackTrace();
+               }
+            }
+
+            // game over animation stuff
+            myBuffer.setColor(Color.WHITE);
+            myBuffer.setFont(whaleITried.deriveFont(100));
+            myBuffer.drawString("GAME OVER", FRAME/2 - 300, FRAME/2 - 50);
+
+
+            repaint();
+            return;
+         }
 
          // check if the player has hit the wall or snake
          checkEndGame();
@@ -341,9 +392,6 @@ public class GamePanel extends JPanel {
          SCOREBOARD.draw(myBuffer, scoreBoardTransparency);
 
          repaint();
-
-         // ticking system to handle the speed of the game
-         
       }
    }
 }

@@ -45,9 +45,13 @@ public class SnakeHead extends SnakePiece {
         g.drawImage(getRotatedImage(0, imageIcon), getX(), getY(), getSize(), getSize(), null);
     }
 
-    public void draw(Graphics g, int angle) {
+    public void draw(Graphics g, int angle, boolean dead) {
         // get the default image for snake head :O
-        ImageIcon imageIcon = new ImageIcon("snake_head_right.png");
+        ImageIcon imageIcon;
+        if(!dead)
+            imageIcon = new ImageIcon("snake_head_right.png");
+        else
+            imageIcon = new ImageIcon("snake_head_right_dead.png");
 
         // draw the image
         g.drawImage(getRotatedImage(angle, imageIcon), getX(), getY(), getSize(), getSize(), null);
