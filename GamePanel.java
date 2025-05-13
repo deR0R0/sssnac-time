@@ -132,7 +132,7 @@ public class GamePanel extends JPanel {
 
    public void snapToGridY() {
       // same as snapToGridX();
-      if(player.getY() % (FRAME / GRID) <= (FRAME / GRID / 2)) {
+      if(player.getY() % (FRAME / GRID) <= (FRAME / GRID / 2 + 10)) {
          player.setY(player.getY() - (player.getY() % (FRAME / GRID)));
          playerRotationSpeed = 5;
       } else {
@@ -351,7 +351,7 @@ public class GamePanel extends JPanel {
       };
       // check if the player has hit the snake
       for(SnakePiece piece : snakeBody) {
-         if(getDistance(player, piece) <= (FRAME / GRID) - (piece.getSize() / 1.5)) {
+         if(getDistance(player, piece) <= (FRAME / GRID) - (piece.getSize() / 1.25)) {
             // end game
             gameOver = true;
             tickUntilBackHome = tick + 450;

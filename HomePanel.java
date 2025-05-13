@@ -51,13 +51,12 @@ public class HomePanel extends JPanel {
 
 
       // Button panel (CENTER)
-      JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 60, 40)); // 3 rows, 1 column, vertical gap for this
-      buttonPanel.setBackground(new Color(220,20,60, 200));
+      JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 60, 40)); // 3 rows, 1 column, vertical gap for this
+      buttonPanel.setOpaque(false);
 
       standardBtn = new JButton("Standard Mode");
       standardBtn.setFont(new Font("Wawati SC", Font.BOLD, 18));
       standardBtn.addActionListener(new StandardListener());
-      
       buttonPanel.add(standardBtn);
 
       speedBtn = new JButton("⏩ Speed Mode");
@@ -65,9 +64,10 @@ public class HomePanel extends JPanel {
       speedBtn.addActionListener(new SpeedListener());
       buttonPanel.add(speedBtn);
 
-      quakeBtn = new JButton(" E A R T H Q U A K E ");
+      quakeBtn = new JButton("🌪️ Quake Mode - COMING SOON!");
       quakeBtn.setFont(new Font("Wawati SC", Font.BOLD, 22));
       quakeBtn.addActionListener(new QuakeListener());
+      quakeBtn.setEnabled(false);
       buttonPanel.add(quakeBtn);
 
       leaderboardBtn = new JButton("🏆 Leaderboard");
