@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class LeaderboardHandler {
     private static String[][] getAllScores() {
         Scanner infile = null;
-        String[][] leaderboard = new String[0][3];
+        String[][] leaderboard = new String[0][4];
 
         try {
             // attempt to read the leaderboard file
@@ -38,7 +38,7 @@ public class LeaderboardHandler {
         while(infile.hasNextLine()) {
             String line = infile.nextLine();
             String[] stuff = line.split(",");
-            String[][] newLeaderboard = new String[leaderboard.length + 1][3];
+            String[][] newLeaderboard = new String[leaderboard.length + 1][4];
             for(int i = 0; i < leaderboard.length; i++) {
                 newLeaderboard[i] = leaderboard[i];
             }
@@ -69,7 +69,7 @@ public class LeaderboardHandler {
         return leaderboard;
     }
 
-    public static void addScore(String name, int score) {
+    public static void addScore(String name, int score, String mode) {
         // open the file
         try {
             // create a new file
@@ -80,7 +80,7 @@ public class LeaderboardHandler {
 
             // write to the file
             PrintWriter writer = new PrintWriter(new FileWriter(file, true));
-            writer.println(name + "," + score + "," + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+            writer.println(name + "," + score + "," + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")) + "," + mode);
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,12 +93,12 @@ public class LeaderboardHandler {
         leaderboard = sortScores(leaderboard);
 
         // get the top 5 scores
-        String[][] top5 = new String[5][3];
+        String[][] top5 = new String[5][4];
         for(int i = 0; i < 5; i++) {
             if(i < leaderboard.length) {
                 top5[i] = leaderboard[i];
             } else {
-                top5[i] = new String[]{"No One Here", "0", "No Date"};
+                top5[i] = new String[]{"No One Here", "0", "No Date", "No Mode"};
             }
         }
 

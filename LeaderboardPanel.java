@@ -40,8 +40,9 @@ public class LeaderboardPanel extends JPanel {
             String name = scores[i][0];
             String score = scores[i][1];
             String date = scores[i][2];
+            String mode = scores[i][3];
             
-            JLabel scoreLabel = new JLabel((i + 1) + ". " + name + ": " + score + " Points   @" + date, SwingConstants.CENTER);
+            JLabel scoreLabel = new JLabel((i + 1) + ". " + name + ": " + score + " Points  Mode: " +  mode + "  @" + date, SwingConstants.CENTER);
             scoreLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
             scoreLabel.setForeground(Color.WHITE);
             leaderboardPanel.add(scoreLabel);

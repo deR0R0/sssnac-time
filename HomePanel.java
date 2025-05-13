@@ -88,7 +88,7 @@ public class HomePanel extends JPanel {
 
    public class StandardListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         GamePanel game = new GamePanel();
+         GamePanel game = new GamePanel(1);
          frame = new JFrame("SSSnack Time - STANDARD MODE");
          frame.setSize(900, 900);
          frame.setLocation(0, 0);
@@ -103,7 +103,7 @@ public class HomePanel extends JPanel {
 
    public class SpeedListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         GamePanel game = new GamePanel();
+         GamePanel game = new GamePanel(2);
          frame = new JFrame("SSSnack Time - SPEED MODE 🔥");
          frame.setSize(900, 900);
          frame.setLocation(0, 0);
@@ -117,7 +117,7 @@ public class HomePanel extends JPanel {
 
    public class QuakeListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         GamePanel game = new GamePanel();
+         GamePanel game = new GamePanel(3);
          frame = new JFrame("SSSnack Time - E A R T H Q U A K E  UR COOKED!!");
          frame.setSize(900, 900);
          frame.setLocation(0, 0);

@@ -42,6 +42,7 @@ public class GamePanel extends JPanel {
 
    // stuff initiazliated after the game starts
    private SnakeHead player;
+   private int playerSpeed;
    private int playerRotation = 0;
    private int playerRotateTo = 0;
    private int playerRotationSpeed = 1; // dynamic, based on early and late turns
@@ -60,9 +61,10 @@ public class GamePanel extends JPanel {
    private boolean lockInput = false;
 
    private Font whaleITried;
+   private String causeOfDeath = "Not Dead Yet";
 
    // constructors, or basically the setup for the game
-   public GamePanel() {
+   public GamePanel(int mode) {
       try {
          whaleITried = Font.createFont(Font.TRUETYPE_FONT, new File("whale-i-tried.ttf")).deriveFont(100f);
       } catch (Exception e) {
@@ -77,11 +79,15 @@ public class GamePanel extends JPanel {
       SCOREBOARD = new Scoreboard(5, 5, 12345, GRID); // Moved away from the edge for better visibility
 
       // create the player
-      player = new SnakeHead(0, 0, FRAME/GRID, 1, "RIGHT", null, null);
+      switch(mode) {
+         case 1 -> {playerSpeed = 1;}
+         case 2 -> {playerSpeed = 2;}
+         case 3 -> {playerSpeed = 3;}
+      }
+      player = new SnakeHead(FRAME/GRID*3, FRAME/GRID*7, FRAME/GRID, playerSpeed, "RIGHT", null, null);
 
       // create apple yummy
-      apple = new Apple(FRAME/GRID*2, 0, FRAME/GRID, GRID);
-      //apple.jump();
+      apple = new Apple(FRAME/GRID*10, FRAME/GRID*7, FRAME/GRID, GRID);
 
       // start the game loop without blocking the gui threads
       t = new Timer(loopDelay, new GameLoop()); // 840 / the integer = fps. 840 = 
@@ -116,7 +122,8 @@ public class GamePanel extends JPanel {
          playerRotationSpeed = 5;
       } else { // if player is in the right half of the grid, snap to next grid
          player.setX(player.getX() + (FRAME / GRID) - (player.getX() % (FRAME / GRID)));
-         player.setSpeed(2);
+         if(playerSpeed == 1)
+            player.setSpeed(2);
          playerRotationSpeed = 3;
       }
 
@@ -130,7 +137,8 @@ public class GamePanel extends JPanel {
          playerRotationSpeed = 5;
       } else {
          player.setY(player.getY() + (FRAME / GRID) - (player.getY() % (FRAME / GRID)));
-         player.setSpeed(2);
+         if(playerSpeed == 1)
+            player.setSpeed(2);
          playerRotationSpeed = 3;
       }
 
@@ -216,14 +224,14 @@ public class GamePanel extends JPanel {
 
    public void handlePlayerActions() {
       // unlock input after set amount of time
-      if(tick >= tickTillResetSpeed + ((FRAME / GRID) / 2)) {
+      if(tick >= tickTillResetSpeed + (((FRAME / GRID) / 2) / player.getSpeed())) {
          lockInput = false;
          tickTillResetSpeed = 0;
       }
 
       // reset player speed when tick has been reached
-      if(tick >= tickTillResetSpeed) {
-         player.setSpeed(1);
+      if(tick >= tickTillResetSpeed && playerSpeed == 1) {
+         player.setSpeed(playerSpeed);
       }
 
       // move the player and draw it
@@ -255,7 +263,7 @@ public class GamePanel extends JPanel {
             case "RIGHT" -> newSnakeX -= FRAME/GRID;
          }
 
-         SnakeBody newBody = new SnakeBody(newSnakeX, newSnakeY, FRAME/GRID, 1, player.getDirection(), last, null, GRID);
+         SnakeBody newBody = new SnakeBody(newSnakeX, newSnakeY, FRAME/GRID, playerSpeed, player.getDirection(), last, null, GRID);
          
          // set the follower to the last piece
          snakeBody.getLast().setFollower(newBody);
@@ -272,7 +280,7 @@ public class GamePanel extends JPanel {
             case "RIGHT" -> newSnakeX += FRAME/GRID;
          }
 
-         SnakeBody newBody = new SnakeBody(newSnakeX, newSnakeY, FRAME/GRID, 1, player.getDirection(), player, null, GRID);
+         SnakeBody newBody = new SnakeBody(newSnakeX, newSnakeY, FRAME/GRID, playerSpeed, player.getDirection(), player, null, GRID);
          
          player.setFollower(player);
          snakeBody.add(newBody);
@@ -282,28 +290,74 @@ public class GamePanel extends JPanel {
    public void detectAppleCollision() {
       // check if the player has eaten the apple
       if(getDistance(player, apple) <= (FRAME / GRID) - 5) {
-         apple.jump();
+         boolean inSnake = true;
+          while (inSnake) { 
+            inSnake = false;
+            if (getDistance(player, apple) <= (FRAME / GRID) - 5) {
+               inSnake = true;
+            } else {
+               for (SnakePiece piece : snakeBody) {
+                 if (getDistance(piece, apple) <= (FRAME / GRID) - 5) {
+                   inSnake = true;
+                   break;
+                 }
+               }
+            }
+            if (inSnake) {
+               apple.jump();
+            }
+          }
          SCOREBOARD.increaseScore();
          addSnakePiece();
+         if(playerSpeed != 1) {
+            player.setSpeed(player.getSpeed() + 1);
+            for(SnakePiece piece : snakeBody) {
+               piece.setSpeed(player.getSpeed());
+            }
+         }
       }
    }
 
    public void checkWallCollision() {
+      String[] possibleDeathMessages = new String[] {
+         "Rammed head into wall",
+         "Hit head on wall",
+         "Wall was tougher than you thought, huh?",
+         "Wall: 1, Head: 0",
+         "Transferred iq into the wall",
+         "Permanent brain damage",
+         "Achievement Unlocked: Wall Enthusiast",
+         "Speedrunners hate bug patches for walls...",
+      };
       // check if the player has hit the wall
-      if(player.getX() < 0 || player.getX() > FRAME - (FRAME / GRID) || player.getY() < 0 || player.getY() > FRAME - (FRAME / GRID)) {
+      if(player.getX() < 0 - (FRAME/GRID/2) || player.getX() > FRAME - (FRAME / GRID / 2) || player.getY() < 0 - (FRAME / GRID / 2) || player.getY() > FRAME - (FRAME / GRID / 2)) {
          // end game
          gameOver = true;
-         tickUntilBackHome = tick + 1500;
+         tickUntilBackHome = tick + 450;
+         // randomly select a death message
+         int randomIndex = (int) (Math.random() * possibleDeathMessages.length);
+         causeOfDeath = possibleDeathMessages[randomIndex];
       }
    }
 
    public void checkSnakeCollision() {
+      String[] possibleDeathMessages = new String[] {
+         "You are your own worst enemy",
+         "Can't eat yourself",
+         "Got caught in a tailspin?",
+         "Bit off more tail than they could chew",
+         "Self-awareness level: deadly",
+         "Simple python loop?"
+      };
       // check if the player has hit the snake
       for(SnakePiece piece : snakeBody) {
          if(getDistance(player, piece) <= (FRAME / GRID) - (piece.getSize() / 1.5)) {
             // end game
             gameOver = true;
-            tickUntilBackHome = tick + 1500;
+            tickUntilBackHome = tick + 450;
+            // randomly select a death message
+            int randomIndex = (int) (Math.random() * possibleDeathMessages.length);
+            causeOfDeath = possibleDeathMessages[randomIndex];
          }
       }
    }
@@ -337,7 +391,14 @@ public class GamePanel extends JPanel {
                   String a = JOptionPane.showInputDialog("Do you want to save your score? (Y/N)");
                   if(a.equalsIgnoreCase("y")) {
                      String name = JOptionPane.showInputDialog("Enter your name:");
-                     LeaderboardHandler.addScore(name, SCOREBOARD.getScore());
+                     String mode = "Standard";
+                     switch(playerSpeed) {
+                        case 1 -> mode = "Standard";
+                        case 2 -> mode = "Speed";
+                        case 3 -> mode = "Quake";
+                     }
+                     LeaderboardHandler.addScore(name, SCOREBOARD.getScore(), mode);
+                     JOptionPane.showMessageDialog(null, "✅ Score saved!");
                   }
 
 
@@ -357,8 +418,15 @@ public class GamePanel extends JPanel {
 
             // game over animation stuff
             myBuffer.setColor(Color.WHITE);
-            myBuffer.setFont(whaleITried.deriveFont(100));
+            myBuffer.setFont(whaleITried.deriveFont(100f));
             myBuffer.drawString("GAME OVER", FRAME/2 - 300, FRAME/2 - 50);
+            myBuffer.setFont(whaleITried.deriveFont(50f));
+            myBuffer.drawString("Score: " + SCOREBOARD.getScore(), FRAME/2 - 300, FRAME/2);
+            myBuffer.setFont(whaleITried.deriveFont(25f));
+            myBuffer.drawString(causeOfDeath, FRAME/2 - 300, FRAME/2 + 50);
+            for(SnakePiece piece : snakeBody) {
+               piece.draw(myBuffer);
+            } 
 
 
             repaint();

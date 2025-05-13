@@ -39,9 +39,9 @@ public class SnakeBody extends SnakePiece {
         }
 
         // move the snake body based on leader's past position
-        if (getLeader() != null && getLeader().getPastPos().size() > getSize() - 1) {
+        if (getLeader() != null && getLeader().getPastPos().size() > (getSize() / getSpeed()) - 1) {
             // get the leader's past position
-            int[] pastPos = getLeader().getPastPos().get(getSize() - 1);
+            int[] pastPos = getLeader().getPastPos().get((getSize() / getSpeed()) - 1);
             setX(pastPos[0]);
             setY(pastPos[1]);
             handleSnakeSprite(pastPos);
