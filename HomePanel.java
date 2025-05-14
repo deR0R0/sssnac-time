@@ -15,6 +15,7 @@ public class HomePanel extends JPanel {
    private JButton speedBtn;
    private JButton quakeBtn;
    private JButton leaderboardBtn;
+   private JButton exitBtn;
    private ImageIcon imageIcon = new ImageIcon(new ImageIcon("snakehomepanel2.png").getImage().getScaledInstance(140, 140, Image.SCALE_DEFAULT));
    private BackgroundGrid bg; 
    private Font whaleITried;
@@ -51,7 +52,7 @@ public class HomePanel extends JPanel {
 
 
       // Button panel (CENTER)
-      JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 60, 40)); // 3 rows, 1 column, vertical gap for this
+      JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 60, 40)); // 3 rows, 1 column, vertical gap for this
       buttonPanel.setOpaque(false);
 
       standardBtn = new JButton("Standard Mode");
@@ -74,6 +75,15 @@ public class HomePanel extends JPanel {
       leaderboardBtn.setFont(new Font("Wawati SC", Font.BOLD, 20));
       leaderboardBtn.addActionListener(new LeaderboardListener());
       buttonPanel.add(leaderboardBtn);
+
+      exitBtn = new JButton("🚪 Exit");
+      exitBtn.setFont(new Font("Wawati SC", Font.BOLD, 20));
+      exitBtn.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+         }
+      });
+      buttonPanel.add(exitBtn);
 
       JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 100));
       mainPanel.add(buttonPanel);

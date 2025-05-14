@@ -226,7 +226,7 @@ public class GamePanel extends JPanel {
 
    public void handlePlayerActions() {
       // unlock input after set amount of time
-      if(tick >= tickTillResetSpeed + (((FRAME / GRID) / 2) / player.getSpeed())) {
+      if(tick >= tickTillResetSpeed + (((FRAME / GRID) / 2) / (player.getSpeed()*2))) {
          lockInput = false;
          tickTillResetSpeed = 0;
       }
