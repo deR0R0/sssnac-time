@@ -64,7 +64,9 @@ public class GamePanel extends JPanel {
    private String causeOfDeath = "Not Dead Yet";
 
    // constructors, or basically the setup for the game
-   public GamePanel(int mode) {
+   public GamePanel(int mode, JFrame frame) {
+      this.frame = frame;
+
       try {
          whaleITried = Font.createFont(Font.TRUETYPE_FONT, new File("whale-i-tried.ttf")).deriveFont(100f);
       } catch (Exception e) {
@@ -402,13 +404,10 @@ public class GamePanel extends JPanel {
                   }
 
 
-                  HomePanel home = new HomePanel();
-                  frame = new JFrame("Home");
-                  frame.setSize(900, 900);
-                  frame.setLocation(0, 0);
-                  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                  HomePanel home = new HomePanel(frame);
                   frame.setContentPane(home);
-                  frame.setVisible(true);
+                  frame.revalidate();
+                  frame.repaint();
                   home.requestFocus();
                   t.stop();
                } catch (Exception err) {

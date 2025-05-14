@@ -19,7 +19,7 @@ public class HomePanel extends JPanel {
    private BackgroundGrid bg; 
    private Font whaleITried;
    
-   public HomePanel() throws Exception {
+   public HomePanel(JFrame frame) throws Exception {
       // get the font from the true type file
       whaleITried = Font.createFont(Font.TRUETYPE_FONT, new File("whale-i-tried.ttf")).deriveFont(100f);
       GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -79,6 +79,8 @@ public class HomePanel extends JPanel {
       mainPanel.add(buttonPanel);
       mainPanel.setBackground(new Color(0, 0, 0, 0));
       add(mainPanel, BorderLayout.CENTER);
+
+      this.frame = frame;
    }
    
    public void paintComponent(Graphics g) {
@@ -88,28 +90,20 @@ public class HomePanel extends JPanel {
 
    public class StandardListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         GamePanel game = new GamePanel(1);
-         frame = new JFrame("SSSnack Time - STANDARD MODE");
-         frame.setSize(900, 900);
-         frame.setLocation(0, 0);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         GamePanel game = new GamePanel(1, frame);
          frame.setContentPane(game); //learned this roberto r u proud of me?
-         frame.setVisible(true);
-         game.requestFocus(); //learned this roberto r u proud of me?
-
-
+         frame.revalidate();
+         frame.repaint();
+         game.requestFocus();
       }
    }
 
    public class SpeedListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         GamePanel game = new GamePanel(2);
-         frame = new JFrame("SSSnack Time - SPEED MODE 🔥");
-         frame.setSize(900, 900);
-         frame.setLocation(0, 0);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         GamePanel game = new GamePanel(2, frame);
          frame.setContentPane(game); //learned this roberto r u proud of me?
-         frame.setVisible(true);
+         frame.revalidate();
+         frame.repaint();
          game.requestFocus(); //learned this roberto r u proud of me?
 
       }
@@ -117,13 +111,10 @@ public class HomePanel extends JPanel {
 
    public class QuakeListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         GamePanel game = new GamePanel(3);
-         frame = new JFrame("SSSnack Time - E A R T H Q U A K E  UR COOKED!!");
-         frame.setSize(900, 900);
-         frame.setLocation(0, 0);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         GamePanel game = new GamePanel(3, frame);
          frame.setContentPane(game); //learned this roberto r u proud of me?
-         frame.setVisible(true);
+         frame.revalidate();
+         frame.repaint();
          game.requestFocus(); //learned this roberto r u proud of me?
 
       }
@@ -131,14 +122,11 @@ public class HomePanel extends JPanel {
 
    public class LeaderboardListener implements ActionListener {
       public void actionPerformed(ActionEvent e) {
-         LeaderboardPanel leaderboard = new LeaderboardPanel();
-         frame = new JFrame("SSSnack Time - Leaderboard");
-         frame.setSize(900, 900);
-         frame.setLocation(0, 0);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         frame.setContentPane(leaderboard);
-         frame.setVisible(true);
-         leaderboard.requestFocus();
+         LeaderboardPanel game = new LeaderboardPanel(frame);
+         frame.setContentPane(game); //learned this roberto r u proud of me?
+         frame.revalidate();
+         frame.repaint();
+         game.requestFocus(); //learned this roberto r u proud of me?
       }
    }
 }

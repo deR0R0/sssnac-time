@@ -10,7 +10,7 @@ public class LeaderboardPanel extends JPanel {
     private Font whaleITried;
 
     // Constructor
-    public LeaderboardPanel() {
+    public LeaderboardPanel(JFrame frame) {
         bg = new BackgroundGrid(10, 10, new Color(143, 205, 57), new Color(168, 217, 72), 900, 900);
         // get the font from the true type file
         try {
@@ -57,6 +57,8 @@ public class LeaderboardPanel extends JPanel {
         backButton.addActionListener(new BackListener());
 
         add(backButton, BorderLayout.SOUTH);
+
+        this.frame = frame;
     }
     
     public void paintComponent(Graphics g) {
@@ -67,13 +69,10 @@ public class LeaderboardPanel extends JPanel {
     public class BackListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
-                HomePanel home = new HomePanel();
-                frame = new JFrame("Home");
-                frame.setSize(900, 900);
-                frame.setLocation(0, 0);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                HomePanel home = new HomePanel(frame);
                 frame.setContentPane(home);
-                frame.setVisible(true);
+                frame.revalidate();
+                frame.repaint();
                 home.requestFocus();
             } catch (Exception err) {
                 err.printStackTrace();
