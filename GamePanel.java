@@ -106,7 +106,7 @@ public class GamePanel extends JPanel {
       @Override
       public void keyPressed(KeyEvent e) {
          int keycode = e.getKeyCode();
-         if(keycode == KeyEvent.VK_UP || keycode == KeyEvent.VK_DOWN || keycode == KeyEvent.VK_LEFT || keycode == KeyEvent.VK_RIGHT) {
+         if(keycode == KeyEvent.VK_UP || keycode == KeyEvent.VK_DOWN || keycode == KeyEvent.VK_LEFT || keycode == KeyEvent.VK_RIGHT || keycode == KeyEvent.VK_W || keycode == KeyEvent.VK_A || keycode == KeyEvent.VK_S || keycode == KeyEvent.VK_D) {
             queuedInput = e;
          }
       }
@@ -170,25 +170,25 @@ public class GamePanel extends JPanel {
 
          // actually handle the turning
          switch(key) {
-            case KeyEvent.VK_UP -> {
+            case KeyEvent.VK_UP, KeyEvent.VK_W -> {
                if(!player.getDirection().equals("DOWN")) {
                   player.setDirection("UP");
                   snapToGridX();
                }
             }
-            case KeyEvent.VK_DOWN -> {
+            case KeyEvent.VK_DOWN, KeyEvent.VK_S -> {
                if(!player.getDirection().equals("UP")) {
                   player.setDirection("DOWN");
                   snapToGridX();
                }
             }
-            case KeyEvent.VK_LEFT -> {
+            case KeyEvent.VK_LEFT, KeyEvent.VK_A -> {
                if(!player.getDirection().equals("RIGHT")) {
                   player.setDirection("LEFT");
                   snapToGridY();
                }
             }
-            case KeyEvent.VK_RIGHT -> {
+            case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> {
                if(!player.getDirection().equals("LEFT")) {
                   player.setDirection("RIGHT");
                   snapToGridY();
