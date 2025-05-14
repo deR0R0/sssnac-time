@@ -416,6 +416,10 @@ public class GamePanel extends JPanel {
                }
             }
 
+            for(SnakePiece piece : snakeBody) {
+               piece.draw(myBuffer);
+            } 
+
             // game over animation stuff
             myBuffer.setColor(Color.WHITE);
             myBuffer.setFont(whaleITried.deriveFont(100f));
@@ -424,9 +428,7 @@ public class GamePanel extends JPanel {
             myBuffer.drawString("Score: " + SCOREBOARD.getScore(), FRAME/2 - 300, FRAME/2);
             myBuffer.setFont(whaleITried.deriveFont(25f));
             myBuffer.drawString(causeOfDeath, FRAME/2 - 300, FRAME/2 + 50);
-            for(SnakePiece piece : snakeBody) {
-               piece.draw(myBuffer);
-            } 
+            
 
 
             repaint();
